@@ -1,0 +1,64 @@
+﻿@page
+@model AuctionProject.Pages.AuctionDetailsModel
+@{
+    var auction = (Entities.Models.Auction)ViewData["Auction"];
+    var highestBid = (Entities.Models.Bid)ViewData["HighestBid"];
+    var user = (Entities.Models.User)ViewData["User"];
+}
+<div class="container-fluid">
+
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Auction Details</h6>
+
+        </div>
+        <div class="card-body">
+            @Html.ValidationSummary()
+            <form method="post" class="user">
+               
+                <div class="form-group row">
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <span class="form-control">Product Name: @auction.ProductName</span>
+                        <span class="form-control">Remaining time: @((auction.EndDate - DateTime.Now).TotalDays) days</span>
+
+                    </div>
+                    <div class="col-md-6">
+                        <span class="form-control ">Created by: @auction.UserID</span>
+                        
+                    </div>
+                 
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <span  class="form-control " > @auction.Description </span>
+                </div>
+
+                
+                <div class="form-group">
+                    <label >Current Highest Bid</label>
+                    
+                   
+                        <span class="form-control">Bid Amount: @highestBid.BidAmount</span>
+                    
+                        <span class="form-control">By User: @highestBid.UserID</span>
+                   
+                   
+                </div>
+                <div class="form-group">
+                    
+                    <input type="number" name="BidAmount" min="@highestBid.BidAmount" max="@user.Balance" class="form-control form-control-user"
+                           placeholder="Your bid goes here">
+
+
+                </div>
+                <input type="hidden" name="AuctionID" value="@auction.ID" />
+                <button type="submit" class="btn btn-primary btn-user btn-block">
+                    Bid!!
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+</div>

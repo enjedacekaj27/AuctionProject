@@ -1,0 +1,77 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    var userData = (Entities.Models.User)ViewData["userData"];
+    var auctions = (List<Entities.Models.Auction>)ViewData["Auctions"];
+    var currentUserId = User.Claims.FirstOrDefault(x=> x.Type == "ID").Value;
+}
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Dashboard</h1>
+    <p class="mb-4">
+        This is your dashboard
+    </p>
+
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Current Balance
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">$@userData.Balance</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Current Auctions <a class="btn btn-dark fa-pull-right" href="CreateAuction">Add New Auction</a></h6>
+            
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                @Html.ValidationSummary()
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Seller</th>
+                            <th>Top Bid</th>
+                            <th>Time Remaining</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in auctions)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>@item.UserID</td>
+                                <td>@(item.Bids.OrderByDescending(x=> x.BidAmount).FirstOrDefault()?.BidAmount ?? item.StartingBid)</td>
+                                <td>@((item.EndDate - item.StartDate).TotalDays) days</td>
+                                <td>
+                                    <a class="btn btn-warning" asp-page="/AuctionDetails" asp-route-id="@item.ID">Details</a>@if (item.UserID.ToString() == currentUserId)
+                                    {
+                                        <a class="btn btn-danger" asp-page="/Index" asp-page-handler="Delete" asp-route-id="@item.ID">Delete</a>
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
